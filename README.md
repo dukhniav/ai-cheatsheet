@@ -30,6 +30,15 @@ Basic hierchy:
   - SARSA
   - Policy Gradient Methods
 
+# Supervised vs. Unsupervised vs. Reinforcement Learning
+The easiest way to distinguish a supervised learning and unsupervised learning is to see whether the data is labelled or not.
+
+**Supervised learning** learns a function to make prediction of a defined label based on the input data. It can be either classifying data into a category (classification problem) or forecasting an outcome (regression algorithms).
+
+**Unsupervised learning** reveals the underlying pattern in the dataset that are not explicitly presented, which can discover the similarity of data points (clustering algorithms) or uncover hidden relationships of variables (association rule algorithms) …
+
+**Reinforcement learning** is another type of machine learning, where the agents learn to take actions based on its interaction with the environment, with the aim to maximize rewards. It is most similar to the learning process of human, following a trial-and-error approach.
+
 # Linear Regression
 At its core, linear regression is a technique for finding the best-fit line through a set of data points. The line is defined by an equation of the form: $y=mx+b$, where:
 - $y$ is the output variable (also called the response variable)
@@ -134,3 +143,135 @@ These are some examples:
 - The probability of a win or loss in a sporting match
 - The probability of passing or failing a test 
 - The probability of an image being a fruit or an animal
+
+# Logistic Regression
+
+Logistic regression is a statistical method used to model the relationship between a set of input variables and a binary output variable (i.e., a variable that takes on one of two possible values). It is a type of supervised learning algorithm that falls under the broader category of machine learning.
+
+The goal of logistic regression is to predict the probability of the binary output variable taking on a certain value, given the values of the input variables. The output of the logistic regression model is a probability value between 0 and 1, which can be converted into a binary classification using a decision threshold.
+
+## How Logistic Regression Works
+
+Logistic regression is a type of regression analysis, similar to linear regression. However, instead of fitting a straight line to the data, logistic regression models the relationship between the input variables and the logarithm of the odds of the binary output variable taking on a certain value.
+
+To fit a logistic regression model, we start by collecting a set of input and output data points. The input variables can be continuous, discrete, or categorical, while the output variable is binary. We then use the collected data to estimate the model parameters, which describe the relationship between the input variables and the output variable.
+
+The logistic regression model uses a mathematical function called the logistic function (also known as the sigmoid function) to model the probability of the binary output variable taking on a certain value. The logistic function is defined as follows:
+
+$σ(z) = 1 / (1 + e^-z)$
+
+where z is a linear combination of the input variables and their corresponding model parameters:
+
+$z = β0 + β1x1 + β2x2 + ... + βpxp$
+
+Here, x1, x2, ..., xp represent the input variables, and β0, β1, β2, ..., βp represent the model parameters. The goal of logistic regression is to estimate the values of the model parameters that best describe the relationship between the input variables and the output variable.
+
+## Estimating Model Parameters
+
+To estimate the values of the model parameters in logistic regression, we use a process called maximum likelihood estimation. This involves finding the values of the model parameters that maximize the likelihood function, which measures the probability of the observed data given the model parameters.
+
+The likelihood function is defined as follows:
+
+$L(β) = ∏(i=1)^n σ(z_i)^yi * (1 - σ(z_i))^(1 - yi)$
+
+where n is the number of observations in the dataset, yi is the binary output variable for observation i, and zi is the linear combination of input variables and model parameters for observation i.
+
+Maximizing the likelihood function involves finding the values of the model parameters that make the observed data most probable. This is typically done using optimization algorithms, such as gradient descent.
+
+## Interpreting Model Parameters
+
+Once we've estimated the values of the model parameters using maximum likelihood estimation, we can use them to interpret the relationship between the input variables and the binary output variable. Each model parameter represents the change in the log-odds of the binary output variable for a one-unit change in the corresponding input variable, holding all other variables constant.
+
+For example, suppose we have a logistic regression model with two input variables x1 and x2, and corresponding model parameters β1 and β2. If we hold x2 constant and increase x1 by one unit, the log-odds of the binary output variable will increase by β1, assuming all other variables are held constant.
+
+## Regularization
+
+In some cases, logistic regression models may suffer from overfitting, where the model is too complex and captures noise in the data rather than the underlying relationship between the input and output variables. To address this, we can use regularization techniques, which add a penalty term to the likelihood function that discourages large values of the model parameters.
+
+Two common regularization techniques used in logistic regression are L1 regularization (also known as Lasso) and L2 regularization (also known as Ridge). L1 regularization adds a penalty term equal to the absolute value of the model parameters, while L2 regularization adds a penalty term equal to the squared value of the model parameters.
+
+## Simple Project: Predicting Diabetes
+
+To solidify your understanding of logistic regression, you could try building a model to predict whether a patient has diabetes based on their medical information. You could use the Pima Indians Diabetes Database, which contains medical information for female patients of Pima Indian heritage, and a binary indicator variable for whether or not they developed diabetes within five years.
+
+Here's some sample code in Python using the scikit-learn library to fit a logistic regression model to the dataset:
+
+```python3
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import pandas as pd
+
+# Load dataset
+url = 'https://raw.githubusercontent.com/jbrownlee/Datasets/master/pima-indians-diabetes.csv'
+dataset = pd.read_csv(url, header=None)
+X = dataset.iloc[:, :-1].values
+y = dataset.iloc[:, -1].values
+
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Fit logistic regression model
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+
+# Make predictions on test set
+y_pred = lr.predict(X_test)
+
+# Evaluate model performance
+accuracy = accuracy_score(y_test, y_pred)
+print('Accuracy: %.2f%%' % (accuracy * 100.0))
+```
+
+In this code, we first load the dataset from a URL and split it into training and testing sets using train_test_split. We then fit a logistic regression model using LogisticRegression, and make predictions on the test set using predict. Finally, we evaluate the model performance using accuracy_score.
+
+## Multiclass Logistic Regression
+
+So far, we've only discussed binary logistic regression, where the output variable can take on two possible values. However, logistic regression can be extended to handle multiclass classification problems, where the output variable can take on more than two possible values.
+
+One way to do this is to use a technique called one-vs-all (OVA) or one-vs-rest (OVR) classification. In this approach, we train k separate binary logistic regression models, where k is the number of classes in the problem. For each model, we treat one class as the "positive" class and all other classes as the "negative" class. To make a prediction for a new input, we compute the probability of belonging to each class using the corresponding logistic regression model, and choose the class with the highest probability.
+
+## Imbalanced Classes
+
+In some classification problems, the distribution of classes in the training data may be highly imbalanced, where one class occurs much less frequently than the other. This can make it difficult for the logistic regression model to learn the relationship between the input and output variables for the minority class.
+
+To address this, we can use techniques such as oversampling the minority class, undersampling the majority class, or using cost-sensitive learning, where we assign different misclassification costs to the different classes.
+
+## Simple Project: Predicting Titanic Survivors
+
+Another way to solidify your understanding of logistic regression is to build a model to predict the likelihood of surviving the sinking of the Titanic, based on passenger data. You can use the Titanic dataset, which contains information on passengers including their age, sex, passenger class, and whether or not they survived.
+
+Here's some sample code in Python using the pandas and scikit-learn libraries to fit a logistic regression model to the dataset:
+
+```python3
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Load dataset
+url = 'https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv'
+dataset = pd.read_csv(url)
+X = dataset[['Age', 'Sex', 'Pclass']]
+y = dataset['Survived']
+
+# Preprocess data
+X['Sex'] = X['Sex'].apply(lambda x: 1 if x == 'male' else 0)
+X = pd.get_dummies(X, columns=['Pclass'], prefix='Pclass')
+
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Fit logistic regression model
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+
+# Make predictions on test set
+y_pred = lr.predict(X_test)
+
+# Evaluate model performance
+accuracy = accuracy_score(y_test, y_pred)
+print('Accuracy: %.2f%%' % (accuracy * 100.0))
+```
+
+In this code, we first load the dataset from a URL and preprocess it by converting the Sex variable to a binary indicator variable and creating indicator variables for the Pclass variable using get_dummies. We then split the data into training and testing sets using train_test_split, fit a logistic regression model using LogisticRegression, and make predictions on the test set using predict. Finally, we evaluate the model performance using accuracy_score.
